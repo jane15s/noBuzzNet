@@ -1,0 +1,61 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.Python
+
+# ---- Virtual environment ----
+.venv/
+env/
+venv/
+ENV/
+*.env
+
+# ---- IDE / Editors ----
+.idea/
+.vscode/
+*.swp
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs / caches ----
+*.log
+*.pot
+*.pyc
+.cache/
+.pytest_cache/
+coverage/
+htmlcov/
+.mypy_cache/
+__pypackages__/
+
+# ---- Build / dist ----
+build/
+dist/
+*.egg-info/
+*.manifest
+*.spec
+
+# ---- Docker ----
+mongo_data/
+*.pid
+
+# ---- FastAPI specific ----
+# compiled templates or uploaded files
+app/static/uploads/
+app/__pycache__/
+
+# ---- Test artifacts ----
+tests/__pycache__/
+tests/.pytest_cache/
+
+# ---- Environment configs ----
+.env
+.env.local
+.env.*.local
