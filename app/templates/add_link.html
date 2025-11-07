@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати посилання</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/darkly/bootstrap.min.css">
+</head>
+<body class="bg-dark text-light">
+<div class="container mt-5" style="max-width: 500px;">
+    <h3 class="mb-4 text-center">➕ Додати посилання</h3>
+    <form method="post" action="/add_link">
+        <div class="mb-3">
+            <label for="name" class="form-label">Назва посилання:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="url" class="form-label">URL:</label>
+            <input type="url" id="url" name="url" class="form-control" required placeholder="https://example.com">
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Зберегти</button>
+            <a href="/" class="btn btn-secondary">Скасувати</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

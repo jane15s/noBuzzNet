@@ -43,8 +43,8 @@ dist/
 *.spec
 
 # ---- Docker ----
-mongo_data/
-*.pid
+.docker/
+*.bak
 
 # ---- FastAPI specific ----
 # compiled templates or uploaded files
