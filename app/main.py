@@ -20,6 +20,22 @@ templates = Jinja2Templates(directory="app/templates")
 
 init_db()
 
+@app.get("/register")
+async def register(request: Request):
+    return templates.TemplateResponse(request=request, name="registration.html")
+
+@app.post("/register")
+async def register():
+    pass
+
+@app.get("/login")
+async def login():
+    pass
+
+@app.get("/logout")
+async def logout():
+    pass
+
 @app.get("/")
 async def home(request: Request):
     links = db_session.query(Link).all()
