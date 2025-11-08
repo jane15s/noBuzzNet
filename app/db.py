@@ -12,26 +12,3 @@ Base.query = db_session.query_property()
 def init_db():
     from app import models
     Base.metadata.create_all(bind=engine)
-
-    from app.models import Link
-    with Session(engine) as session:
-        if not session.query(Link).first():
-            default_links = [
-                models.Link(
-                    link="https://www.google.com",
-                    description="Пошук в інтернеті",
-                    icon = "https://www.google.com/favicon.ico"
-                ),
-                models.Link(
-                    link="https://www.dtek.com",
-                    description="DTEK",
-                    icon="https://www.dtek.com/favicon.ico"
-                ),
-                models.Link(
-                    link="https://www.facebook.com",
-                    description="Facebook",
-                    icon="https://www.facebook.com/favicon.ico"
-                )
-            ]
-            session.add_all(default_links)
-            session.commit()

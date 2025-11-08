@@ -22,7 +22,7 @@ class Link(Base):
     link = Column(String(255), nullable=False)
     description = Column(String(100))
     datetime_created =Column(DateTime(timezone=True), server_default=func.now())
-    owner = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    owner = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     icon = Column(String(255))
 
     def __repr__(self):
