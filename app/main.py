@@ -9,20 +9,30 @@ from starlette.templating import Jinja2Templates
 from passlib.context import CryptContext
 from starlette.middleware.sessions import SessionMiddleware
 import os
-
+from dotenv import load_dotenv
 from app.db import init_db, db_session
 from app.models import Link, User
+from authlib.integrations.starlette_client import OAuth
+
+load_dotenv()
 
 app = FastAPI()
-
-app.add_middleware(SessionMiddleware, secret_key="supersecret")
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
 templates = Jinja2Templates(directory="app/templates")
 
 init_db()
 pwd_context = CryptContext(schemes=["bcrypt"])
+
+oauth = OAuth()
+oauth.register(
+    name="google",
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"}
+)
 
 @app.get("/login")
 async def login_page(request: Request):
@@ -54,6 +64,40 @@ async def register(name: str = Form(...), email: str = Form(...), password: str 
 
     return RedirectResponse(url="/login", status_code=303)
 
+@app.get("/login/google")
+async def login_via_google(request: Request):
+    redirect_uri = request.url_for("auth_via_google")
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+@app.get("/auth/google")
+async def auth_via_google(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user_info =token.get("userinfo")
+
+    if not user_info:
+        user_info = await oauth.google.parse_id_token(request, token)
+    email = user_info["email"]
+    name = user_info.get("name", "Google User")
+
+    user = db_session.query(User).filter_by(email=email).first()
+    new_user = False
+    if not user:
+        user = User(name=name, email=email, auth_provider="google")
+        db_session.add(user)
+        new_user = True
+
+    if new_user:
+        default_link = Link(link="https://www.google.com", description="Пошук в інтернеті",
+                        icon="https://www.google.com/favicon.ico", owner=user.id)
+        db_session.add(default_link)
+
+    db_session.commit()
+
+    request.session["user_id"] = user.id
+    request.session["user_name"] = user.name
+
+    return RedirectResponse(url="/", status_code=303)
+
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
@@ -79,6 +123,19 @@ async def add_link(request: Request, name: str = Form(...), url = Form(...)):
     favicon = f"{base_url}/favicon.ico"
     new_link = Link(link=url, description=name, icon=favicon, owner=user_id)
     db_session.add(new_link)
+    db_session.commit()
+    return RedirectResponse(url="/", status_code=303)
+
+@app.get("/edit_link/{link_id}")
+async def editing_link(request: Request, link_id: int):
+    link = db_session.query(Link).filter_by(id=link_id).first()
+    return templates.TemplateResponse(request=request, name="edit_link.html", context={"link": link})
+
+@app.post("/edit_link/{link_id}")
+async def edit_link(request: Request, link_id: int, name: str = Form(...), url = Form(...)):
+    link = db_session.query(Link).filter_by(id=link_id).first()
+    link.description = name
+    link.link = url
     db_session.commit()
     return RedirectResponse(url="/", status_code=303)
 

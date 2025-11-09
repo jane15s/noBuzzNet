@@ -3,3 +3,5 @@ uvicorn
 jinja2
 sqlalchemy
 itsdangerous
+authlib
+httpx
