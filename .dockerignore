@@ -1,0 +1,35 @@
+# virtual environments
+.venv/
+env/
+venv/
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE and system files
+.idea/
+.vscode/
+.DS_Store
+
+# git
+.git/
+.gitignore
+
+# docker files
+Dockerfile
+docker-compose.yml
+
+# test
+test_app.py
+
+# local database and logs
+*.db
+*.log
+*.sqlite
+*.sqlite3
+
+# OS-specific junk
+Thumbs.db

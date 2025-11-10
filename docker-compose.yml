@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  nobuzznet:
+    build: .
+    container_name: nobuzznet_app
+    ports:
+      - "8080:8000"
+    volumes:
+      - .:/noBuzzNet
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
