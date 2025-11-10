@@ -1,8 +1,6 @@
-from xmlrpc.client import DateTime
-
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.sql import func
-from app.db import Base
+from db import Base
 
 class User(Base):
     __tablename__ = 'users'

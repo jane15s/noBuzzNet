@@ -48,7 +48,7 @@ dist/
 
 # ---- FastAPI specific ----
 # compiled templates or uploaded files
-app/static/uploads/
+static/uploads/
 app/__pycache__/
 
 # ---- Test artifacts ----

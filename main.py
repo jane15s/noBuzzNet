@@ -1,4 +1,3 @@
-from http.client import responses
 from urllib.parse import urlparse
 
 from fastapi import FastAPI, Form
@@ -10,8 +9,8 @@ from passlib.context import CryptContext
 from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
-from app.db import init_db, db_session
-from app.models import Link, User
+from db import init_db, db_session
+from models import Link, User
 from authlib.integrations.starlette_client import OAuth
 
 load_dotenv()
@@ -19,8 +18,8 @@ load_dotenv()
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"))
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 init_db()
 pwd_context = CryptContext(schemes=["bcrypt"])
@@ -84,6 +83,7 @@ async def auth_via_google(request: Request):
     if not user:
         user = User(name=name, email=email, auth_provider="google")
         db_session.add(user)
+        db_session.flush()
         new_user = True
 
     if new_user:
@@ -146,4 +146,6 @@ async def delete_link(link_id: int):
     db_session.commit()
     return RedirectResponse(url="/", status_code=303)
 
-
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
